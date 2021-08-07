@@ -1,58 +1,60 @@
 /*----------------------------------------------------------------------------------------------------------------------
-    Runnable arayüzünü implemente eden bir sınıf da thread sınıfı gibi kullanabilir
+    Aşağıdaki örnekte m_val değerinin beklenen değerinde olmadığına dikkat ediniz
 ----------------------------------------------------------------------------------------------------------------------*/
 package org.csystem.app;
 
 import org.csystem.util.console.Console;
-import org.csystem.util.iterable.generator.RandomIntGenerator;
-import org.csystem.util.thread.ThreadUtil;
 
-import java.util.Random;
+import java.util.ArrayList;
 
 class App {
     public static void main(String[] args)
     {
-        MyApplication.run();
+        var inc = new Incrementer(3, 10_000_000);
+
+        inc.run();
+
+        Console.writeLine("val:%d", inc.getVal());
     }
 }
 
-class MyApplication {
-    //...
-    public static void run()
-    {
+class Incrementer {
+    private int m_val;
+    private final int m_numberOfThreads;
+    private final long m_count;
 
+    private void threadCallback()
+    {
+        for (long i = 0; i < m_count; ++i)
+            ++m_val;
     }
-}
 
-
-class RandomIntGeneratorThread implements Runnable {
-    private final int m_count;
-    private final int m_min;
-    private final int m_max;
-
-    public RandomIntGeneratorThread(int count, int min, int max)
+    public Incrementer(int numberOfThreads, long count)
     {
-        //...
+        m_numberOfThreads = numberOfThreads;
         m_count = count;
-        m_min = min;
-        m_max = max;
     }
 
-    @Override
+    public int getVal()
+    {
+        return m_val;
+    }
     public void run()
     {
-        var r = new Random();
-        var self = Thread.currentThread();
+        var threads = new ArrayList<Thread>();
 
-        Console.writeLine("Name:%s", self.getName());
-
-        for (int i = 0; i < m_count; ++i) {
-            int val = r.nextInt(m_max - m_min + 1) + m_min;
-
-            Console.write("%02d ", val);
-            ThreadUtil.sleep(1000);
+        for (int i = 0; i < m_numberOfThreads; ++i) {
+            var t = new Thread(this::threadCallback);
+            t.start();
+            threads.add(t);
         }
 
-        Console.writeLine();
+        try {
+            for (var thread : threads)
+                thread.join();
+        }
+        catch (InterruptedException ignore) {
+
+        }
     }
 }
