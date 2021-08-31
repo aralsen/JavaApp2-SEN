@@ -10,10 +10,9 @@
 	</parent>
 
 	<groupId>org.csystem</groupId>
-	<artifactId>org-csystem-util-exception</artifactId>
+	<artifactId>org-csystem-util-data</artifactId>
 	<version>1.0.0</version>
-	<name>ExceptionUtilLib</name>
-	<description>Exception utility library</description>
+	<name>org-csystem-util-data</name>
 
 	<properties>
 		<java.version>8</java.version>
