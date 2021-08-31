@@ -12,32 +12,13 @@ import java.util.Random;
 import java.util.concurrent.ExecutorService;
 
 @Component
-public class ProducerConsumerRunner implements ApplicationRunner {
+public class ConsumerRunner implements ApplicationRunner {
     private final ExecutorService m_threadPool;
     private final SharedObject m_sharedObject;
     private final Random m_random;
 
-    @Value("${sleep.min:0}")
-    private long m_min;
-
-    @Value("${sleep.max:1}")
-    private long m_max;
-
     @Value("${produce.count:99}")
     private int m_count;
-
-    private void producerCallback()
-    {
-        int i = 0;
-
-        for (;;) {
-            ThreadUtil.sleep(Math.abs(m_random.nextLong()) % (m_max - m_min + 1) + m_min);
-            m_sharedObject.setVal(i);
-            if (i == m_count)
-                break;
-            ++i;
-        }
-    }
 
     private void consumerCallback()
     {
@@ -50,10 +31,10 @@ public class ProducerConsumerRunner implements ApplicationRunner {
                 break;
         }
 
-        Console.writeLine();
+        m_threadPool.shutdown();
     }
 
-    public ProducerConsumerRunner(ExecutorService threadPool, SharedObject sharedObject, Random random)
+    public ConsumerRunner(ExecutorService threadPool, SharedObject sharedObject, Random random)
     {
         m_threadPool = threadPool;
         m_sharedObject = sharedObject;
@@ -63,8 +44,6 @@ public class ProducerConsumerRunner implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception
     {
-        m_threadPool.execute(this::producerCallback);
         m_threadPool.execute(this::consumerCallback);
-        m_threadPool.shutdown();
     }
 }
