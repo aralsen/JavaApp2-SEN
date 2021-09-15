@@ -1,4 +1,4 @@
-package org.csystem.application.server.randompasswordgenerator.configuration;
+package org.csystem.application.server.randompasswordgenerator.configuration.async;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
