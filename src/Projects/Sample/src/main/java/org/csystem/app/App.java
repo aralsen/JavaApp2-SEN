@@ -1,60 +1,24 @@
-/*----------------------------------------------------------------------------------------------------------------------
-    Aşağıdaki örnekte m_val değerinin beklenen değerinde olmadığına dikkat ediniz
-----------------------------------------------------------------------------------------------------------------------*/
 package org.csystem.app;
 
 import org.csystem.util.console.Console;
 
-import java.util.ArrayList;
-
-class App {
+public class App{
     public static void main(String[] args)
     {
-        var inc = new Incrementer(3, 10_000_000);
 
-        inc.run();
+        var thread = new Thread(() -> {
+            var self = Thread.currentThread();
+            self.setPriority(Thread.MAX_PRIORITY);
 
-        Console.writeLine("val:%d", inc.getVal());
-    }
-}
+            Console.writeLine(self.isDaemon() ? "Deamon" : "Non-daemon");
 
-class Incrementer {
-    private int m_val;
-    private final int m_numberOfThreads;
-    private final long m_count;
+            for (int i = 0; i < 10; ++i) {
+                Console.write("%d ", i);
+            }
 
-    private void threadCallback()
-    {
-        for (long i = 0; i < m_count; ++i)
-            ++m_val;
-    }
+            Console.writeLine();
+        });
 
-    public Incrementer(int numberOfThreads, long count)
-    {
-        m_numberOfThreads = numberOfThreads;
-        m_count = count;
-    }
-
-    public int getVal()
-    {
-        return m_val;
-    }
-    public void run()
-    {
-        var threads = new ArrayList<Thread>();
-
-        for (int i = 0; i < m_numberOfThreads; ++i) {
-            var t = new Thread(this::threadCallback);
-            t.start();
-            threads.add(t);
-        }
-
-        try {
-            for (var thread : threads)
-                thread.join();
-        }
-        catch (InterruptedException ignore) {
-
-        }
+        thread.start();
     }
 }
