@@ -5,14 +5,14 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.5.4</version>
+		<version>2.5.3</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
 	<groupId>org.csystem</groupId>
-	<artifactId>RandomPasswordGeneratorConsoleClient</artifactId>
+	<artifactId>GeneralConsoleClient</artifactId>
 	<version>1.0.0</version>
-	<name>RandomPasswordGeneratorConsoleClient</name>
+	<name>GeneralConsoleClient</name>
 	<description>Generic Application</description>
 
 	<properties>
@@ -35,7 +35,7 @@
 		<dependency>
 			<groupId>org.csystem</groupId>
 			<artifactId>org-csystem-util-net</artifactId>
-			<version>1.0.0</version>
+			<version>1.1.0</version>
 		</dependency>
 
 		<dependency>
@@ -53,33 +53,13 @@
 		<dependency>
 			<groupId>org.csystem</groupId>
 			<artifactId>org-csystem-util-commandprompt</artifactId>
-			<scope>1.0.0</scope>
+			<version>1.0.0</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.csystem</groupId>
-			<artifactId>org-csystem-util-commandprompt</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.csystem</groupId>
-			<artifactId>org-csystem-util-commandprompt</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.csystem</groupId>
-			<artifactId>org-csystem-util-commandprompt</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.csystem</groupId>
-			<artifactId>org-csystem-util-commandprompt</artifactId>
-			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
 
