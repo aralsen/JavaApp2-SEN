@@ -29,8 +29,7 @@ public class Receiver {
 
                 datagramSocket.receive(datagramPacket);
                 var length = datagramPacket.getLength();
-                byte [] data = Arrays.copyOf(datagramPacket.getData(), length);
-                var text = BitConverter.toString(data);
+                var text = BitConverter.toString(datagramPacket.getData(), 0, length);
                 var host = datagramPacket.getAddress().getHostAddress();
                 var port = datagramPacket.getPort();
 

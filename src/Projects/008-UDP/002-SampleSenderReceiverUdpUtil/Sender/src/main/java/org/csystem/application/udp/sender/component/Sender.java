@@ -5,9 +5,6 @@ import org.csystem.util.net.UdpUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.net.DatagramSocket;
-
 @Component
 public class Sender {
     @Value("${sender.host}")
@@ -18,7 +15,7 @@ public class Sender {
 
     public void run()
     {
-        try (var datagramSocket = new DatagramSocket()) {
+        try {
             for (;;) {
                 var text = Console.read("Text:");
 
@@ -27,9 +24,6 @@ public class Sender {
 
                 UdpUtil.sendString(m_host, m_port, text);
             }
-        }
-        catch (IOException ex) {
-            Console.Error.writeLine("IOException:%s", ex.getMessage());
         }
         catch (Throwable ex) {
             Console.Error.writeLine("Throwable:%s", ex.getMessage());
