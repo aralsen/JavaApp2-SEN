@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------
 FILE        : ExceptionUtil.java
 AUTHOR      : Oğuz Karan
-LAST UPDATE : 30.09.2020
+LAST UPDATE : 19.09.2021
 
 ExceptionUtil class for exception managing
 
@@ -10,14 +10,12 @@ All Rights Free
 -----------------------------------------------------------------------*/
 package org.csystem.util.exception;
 
+import java.io.Closeable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 public final class ExceptionUtil {
-    private ExceptionUtil()
-    {}
-
     private static <T extends RuntimeException> void throwException(String msg, Class<T> cls, Throwable ex)
     {
         try {
@@ -27,6 +25,9 @@ public final class ExceptionUtil {
             throw new UnsupportedOperationException("Fault for exception class");
         }
     }
+
+    private ExceptionUtil()
+    {}
 
     public static <T extends RuntimeException> void doWorkForRunnable(IActionCallback actionCallback, String msg, Class<T> cls)
     {
@@ -111,6 +112,78 @@ public final class ExceptionUtil {
     public static void subscribeRunnable(IActionCallback actionCallback, Consumer<Throwable> consumer)
     {
         try {
+            actionCallback.run();
+        }
+        catch (Throwable ex) {
+            consumer.accept(ex);
+        }
+    }
+
+    public static <R> R subscribe(ISupplierCallback<R> supplier, Function<Throwable, R> function, Runnable runnableCompleted)
+    {
+        try {
+            return supplier.get();
+        }
+        catch (Throwable ex) {
+            return function.apply(ex);
+        }
+        finally {
+            runnableCompleted.run();
+        }
+    }
+
+    public static void subscribeRunnable(IActionCallback actionCallback, Consumer<Throwable> consumer, Runnable runnableCompleted)
+    {
+        try {
+            actionCallback.run();
+        }
+        catch (Throwable ex) {
+            consumer.accept(ex);
+        }
+        finally {
+            runnableCompleted.run();
+        }
+    }
+
+    public static <R> R subscribe(ISupplierCallback<R> supplier, Closeable closeable, Function<Throwable, R> function, Runnable runnableCompleted)
+    {
+        try (closeable) {
+            return supplier.get();
+        }
+        catch (Throwable ex) {
+            return function.apply(ex);
+        }
+        finally {
+            runnableCompleted.run();
+        }
+    }
+
+    public static void subscribeRunnable(IActionCallback actionCallback, Closeable closeable, Consumer<Throwable> consumer, Runnable runnableCompleted)
+    {
+        try (closeable) {
+            actionCallback.run();
+        }
+        catch (Throwable ex) {
+            consumer.accept(ex);
+        }
+        finally {
+            runnableCompleted.run();
+        }
+    }
+
+    public static <R> R subscribe(ISupplierCallback<R> supplier, Closeable closeable, Function<Throwable, R> function)
+    {
+        try (closeable) {
+            return supplier.get();
+        }
+        catch (Throwable ex) {
+            return function.apply(ex);
+        }
+    }
+
+    public static void subscribeRunnable(IActionCallback actionCallback, Closeable closeable, Consumer<Throwable> consumer)
+    {
+        try (closeable) {
             actionCallback.run();
         }
         catch (Throwable ex) {

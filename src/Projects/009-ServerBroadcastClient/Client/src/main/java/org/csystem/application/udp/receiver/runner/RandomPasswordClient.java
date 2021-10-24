@@ -2,7 +2,6 @@ package org.csystem.application.udp.receiver.runner;
 
 import org.csystem.util.console.Console;
 import org.csystem.util.net.TcpUtil;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.net.Socket;
