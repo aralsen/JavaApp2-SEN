@@ -25,7 +25,7 @@ public class Commands {
     @Value("${count:1}")
     private int m_count;
 
-    private static byte getTotalBytes(RandomAccessFile raf)
+    private static byte geTotalBytes(RandomAccessFile raf)
     {
         byte sum = 0;
 
@@ -62,7 +62,7 @@ public class Commands {
                     .forEach(val -> writeInt(raf, val));
 
             raf.seek(0);
-            raf.writeByte(-getTotalBytes(raf));
+            raf.writeByte(-geTotalBytes(raf));
         }
         catch (Throwable ex) {
             Console.Error.writeLine(ex);
@@ -72,7 +72,7 @@ public class Commands {
     private boolean check(String path)
     {
         try (var raf = new RandomAccessFile(path, "r")){
-           return getTotalBytes(raf) == 0;
+           return geTotalBytes(raf) == 0;
         }
         catch (Throwable ex) {
             Console.Error.writeLine(ex.getMessage());
