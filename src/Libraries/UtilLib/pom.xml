@@ -13,12 +13,12 @@
 
     <groupId>org.csystem</groupId>
     <artifactId>org-csystem-util</artifactId>
-    <version>3.2.0</version>
+    <version>4.0.0</version>
 
     <repositories>
         <repository>
             <id>javaapp2-Jul-2021</id>
-            <url>http://raw.github.com/oguzkaran/javaapp2-jul-2021-maven-repo/main</url>
+            <url>https://raw.github.com/oguzkaran/javaapp2-jul-2021-maven-repo/main</url>
         </repository>
     </repositories>
 
