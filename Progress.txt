@@ -1,0 +1,779 @@
+1.Ders ->   program --> executable file 
+			.jar -> executable
+			çalışan program = process 
+			programlar izole biçimde çalışıyorlar.
+			CPU görevlerinden biri yazdığımız kodu çalıştırmaki.
+			ALU -> aritmatik işlemleri yapıyor.
+			
+			Scheduling algorithms:
+			Six types of process scheduling algorithms are: 
+			1) First Come First Serve (FCFS), 
+			2) Shortest-Job-First (SJF) Scheduling 
+			3) Shortest Remaining Time 
+			4) Priority Scheduling 
+			5) Round Robin Scheduling 
+			6) Multilevel Queue Scheduling.
+
+			windows işletim sisteminde spawn deniyor bir processin başka processi açmasına
+			Linux sistemlerinde exec deniyor 
+			
+			ProcessBuilder class java 11
+			
+			Thread -> bir processin  bağımsız olarak çizelgelemeye giren akışı
+			
+			process üzerinde ve thread üzerinde schedule etme farkı:
+			*thread üzerinde schedule edildiğinde bir processin farklı threadleri olduğu icin bir process CPU'da daha fazla vakit harcayabiliyor.
+			o yüzden isletim sistemlerinde threadler üzerinde scheduling yapılıyor.
+			-------------------------------------
+			process/thread state
+			bir thread şu statelerde olabiliyor (*):
+			start -
+			
+			*running
+			*waiting
+			*ready
+			
+			end -
+			----------------------------------------
+			
+			Threads are a way for a program to divide itself into two or more simultaneously running tasks. 
+			Different threads in the same process share same resources. 
+			A process without any threads can be thought of as a process with just one thread (called main thread). 
+			Multiple threads in a process (including the main thread) share the same copy of the heap and the code. 
+			However, each thread gets its own stack.
+			Therefore, they get their own copies of local variables
+			
+			mutex -> mutually execution -> bir thread bir akışı elde ettiği zaman diğer thread bu akışa girmesin.
+			bir thread bu akışa girdiğinde diğer thread bloke biçimde bekliyor.
+			
+			it is important to synchronize or ‘control’ each thread’s access to shared data when the
+			data is modified. We use what is called “mutex” to synchronize access between threads.
+			
+	
+2.Ders ->   Java Thread Apı -> operating system thread'ı kullanıyor.
+			Thread class
+			ThreadRandom class
+			
+			Thread yaratmak için en temel işlem Thread sınıfından türetme yapmaktır. Thread sınıfının non-static start metodu
+			yaratılan thread için Thread sınıfının run metodunun kodları çalıştırılır. Bu durumda programcı run metodunu
+			override edip thread ile yapılacakları belirlemelidir.
+			
+			Runnable arayüzünü implemente eden bir sınıf da thread sınıfı gibi kullanabilir.
+			
+			lambda ifadeleri kendisinden önce bildirilmis olan yerel ve parametre değişkenlerini effectively final olarak yakalar.
+			
+3.Ders ->   asenkron -> eş zamanlı, birbirlerini beklemek zorunda olmamak
+
+4.Ders -> 
+		/*----------------------------------------------------------------------------------------------------------------------
+			Bir thread aşağıdaki durumlardan biri ile sonlanır:
+			- Thread akışına ilişkin metot normal olarak sonlanır
+			- Thread akışı içerisinde oluşan bir exception yakalanamaz ise thread sonlanır
+			- Thread'in ait olduğu process sonlandığında tüm thread'ler sonlanır. Örneğin process içerisinde herhangi bir
+			yerde System.exit çağrıldığında process sonlanır.
+			- Thread daemon bir thread ise ve ait olduğu process içerisinde tüm non-daemon thread'ler sonlanmışsa daemon olan
+			thread de sonlanır
+		----------------------------------------------------------------------------------------------------------------------*/
+
+		/*----------------------------------------------------------------------------------------------------------------------
+			Bir thread'in başka bir thread tarafından doğrudan sonlandırılması mümkün değildir. Sonlandırılacak thread'in buna
+			uygun olarak yazılması gerekir. Her ne kadar Thread sınıfının stop isimli bir metodu olsa da bu metot deprecated
+			durumdadır ve birçok sistemde de çalışmamaktadır
+		----------------------------------------------------------------------------------------------------------------------*/
+
+		/*----------------------------------------------------------------------------------------------------------------------
+			Anahtar Notlar: Thread'ler algoritmik olarak iki gruba ayrılabilir: I/O bound thread, CPU bound thread
+
+			Bir thread zamanının çoğunu CPU'yu meşgul ederek yani pek bloke duruma gelmiyorsa bu tip thread'lere "CPU bound thread"
+			denir. Tersine bir thread zamanının çoğunu bloke olarak geçiriyorsa bu thread'lere "I/O bound thread" denir. Şüphesiz
+			bu göreceli bir kavramdır. Hiç birisine girmeyen ya da her ikisi de denebilecek thread'ler de olabilir.
+		----------------------------------------------------------------------------------------------------------------------*/
+
+		/*----------------------------------------------------------------------------------------------------------------------
+			Her thread'in bir interrupt flag değeri vardır. Thread start edildiğinde flag değeri reset (clear) durumdadır. Bir
+			thread'in interrupt flag değeri interrupt isimli non-static bir metot ile set edilebilir. Bu işlem  programcı
+			tarafından tutulan bir flag değişkeni ile yapıldığında ileride ele alacağımız bir senkronizasyon problemleri ortaya
+			çıkabilir. Bu sebeple interrupt flag değeri kullanılmalıdır.
+
+			Bir thread sleep, join ve thread'e yönelik bloke işlemi yapan metotlar içerisindeyken başka bir thread interrupt
+			flag değerini set etmişse, yani o thread için non-static interrupt metodunu çağırmışsa metotlar InterruptedException
+			nesnesi fırlatırlar. Bu exception nesnesi ile programcı "interrupt" edildiğinde (geldiğinde) yapılacak işlemleri
+			thread içerisinde organize eder. sleep, join gibi metotlar InterruptedException fırlatıldığında thread'in interrupt
+			flag değerini reset ederler.
+		----------------------------------------------------------------------------------------------------------------------*/
+		
+		/*----------------------------------------------------------------------------------------------------------------------
+			Aşağıdaki örnekte thread içerisinde sleep metodu interrupt flag set edildiğinde InterruptedException nesnesi
+			fırlatmış thread normal olarak sonlanmıştır
+		----------------------------------------------------------------------------------------------------------------------*/
+		package org.csystem.app;
+
+		import org.csystem.util.console.Console;
+		import org.csystem.util.thread.ThreadUtil;
+
+		import java.util.Random;
+
+		class App {
+			public static void main(String[] args)
+			{
+				var random = new Random();
+				var n = Console.readInt("Bir sayı giriniz:");
+
+				var t = new Thread(() -> {
+					try {
+						for (int i = 0; i < n; ++i) {
+							Console.write("%d ", i);
+							Thread.sleep(1000);
+						}
+					}
+					catch (InterruptedException ignore) {
+						Console.writeLine("\nInterrupt geldi. Artık işleme devam etmeyeceğim");
+					}
+
+					Console.writeLine("Artık sonlanma zamanıdır");
+				});
+
+				t.start();
+
+				ThreadUtil.sleep(random.nextInt(4000) + 1000);
+
+				t.interrupt();
+			}
+		}
+
+		/*----------------------------------------------------------------------------------------------------------------------
+			Aşağıdaki örnekte thread interrupt edildiğinde ilgili işi yapmış fakat sonlanmamıştır. Örnekte sleep metodunun
+			interrupt flag değerini reset duruma getirdiğine dikkat edilir
+		----------------------------------------------------------------------------------------------------------------------*/
+		package org.csystem.app;
+
+		import org.csystem.util.console.Console;
+		import org.csystem.util.thread.ThreadUtil;
+
+		import java.util.Random;
+
+		class App {
+			public static void main(String[] args)
+			{
+				var random = new Random();
+				var n = Console.readInt("Bir sayı giriniz:");
+
+				var t = new Thread(() -> {
+					for (int i = 0; i < n; ++i) {
+						try {
+							Console.write("%d ", i);
+							Thread.sleep(1000);
+						}
+						catch (InterruptedException ignore) {
+							Console.writeLine("\nInterrupt geldi ama umurumda değil!....");
+						}
+					}
+
+					Console.writeLine("Artık sonlanma zamanıdır");
+				});
+
+				t.start();
+
+				ThreadUtil.sleep(random.nextInt(4000) + 1000);
+
+				t.interrupt();
+
+				ThreadUtil.sleep(random.nextInt(4000) + 1000);
+
+				t.interrupt();
+			}
+		}
+			
+		-------------------------------------------------------------------
+		Thread sınıfının static interrupted metodu interrupt status değeri set edilmişse true, edilmemişse false değerine
+		geri döner.
+		Thread sınıfının interrupted metodu interrupt flag değeri değeri set edilmişse true dönmeden önce flag değerini
+		reset eder.
+
+		Thread sınıfının non-static isInterrupted metodu interrupt status değeri set edilmişse true, edilmemişse false değerine
+		geri döner.
+		
+		Thread sınıfının isInterrupted metodu interrupt flag değeri değeri set edilmişse true dönmeden önce flag değerini
+		reset etmez.
+			
+5.Ders -> AtomicInteger class
+			
+7.Ders -> ExecuterService (java 11), Thread Pool
+
+8.Ders -> RandomInReducerApp asenkron şekilde yazıldı.
+
+
+9.Ders -> Kodun çalışmasında hiçbir değişiklik olmaması koşuluyla derleyiciler programcının yazdığı kodu yeniden düzenleyebilir.
+	      VOLATILE değişkenler, 004-ProducerConsumerNotify. wait ve notify metodların çağrıldığı akışların synchronized olması gerekiyor. 
+		  ya synchronize bloğu icerisinde ya da synchronized bir metod içerisinde çağrılmaları gerekiyor.
+		  
+		  @component -> spring boot initialize işleminde singleton olarak yaratılıyor.
+		  @Qualifier -> named bean
+		  
+		  java -jar ProducerConsumerWaitNotify-1.0.0.jar --produce.count=20
+		  
+
+10.Ders -> 005-ProducerConsumerBinarySemaphore , 
+		   Semaphore bir kritik bölgeye n tane akışın izin verilmesi ancak n + 1 akışın beklemesi
+		   Semaphore class  acquire isimli metod beklemeyi sağlıyor, akış girebilmişse sayacı azaltıyor, release metodu sayacı arttırıyor
+		   ctordaki permits -> Semaphore'in baslangıc sayacı, boolean fair paramtersi ise Semaphore ilk turunda akışı alabiliyor
+		   binary Semaphore -> sayacı 1 olan Semaphore
+		   
+		   006-ProducerConsumerQueueSemaphore
+		   TCP/IP programlama 
+		   007-TCPRandomPasswordGeneratorServerApp
+		   ServerSocket class
+		   
+11.Ders ->  Http'de nasıl haberleşeceğimiz belli ve ona uygun kodlar yazıyoruz. TCP'de ise kendimiz protocolü belirliyoruz.
+			backlog , aynı anda kaç tane client bağlanmaya çalışabilir demek ServerSocket(port, backlog)
+			RandomPasswordGenerator için Client ve Server tarafı yazıldı
+			
+		   
+12.Ders ->  try-with-resources ile bloğun icine doğrudan nesne yaratmadan yazış Java 9 ile geldi.
+			java tamsayıları bigendian formattadır.
+			Bir sınıfın equals metodu override edilmemişse adres karşılaştırması yapılır.
+			
+		   
+13.Ders -> Collection interfacede removeIf metodu koşula uyan bütün elemenları siler.
+		   NetLib library tanıtımı hocanın yazdığı --hem android hem java için..
+		   UTF_8 standart ascii karakterleri 1 byte olarak tutar, unicodeleri 2 bytee, unicod ötesindeki standart karakterleri daha fazla byte'ta
+		   
+
+20. Ders -> Bir tam sayı birden fazla bytten oluşuyorsa tutulma biçimi endian deniyor. 
+			Düşük numaralı byte yüksek numaralı indexteyse  o zaman big endian sistemler deniyor.
+			Java sistem ne olursa olsun big endian çalışıyor (bütün tam sayı türleri için defaultunda böyle çalışıyor ve endian değeri değiştirilebiliyor..)
+			
+			short a = 10; //00000000 00001010 -> Big Endian
+			var data = ByteBuffer.allocate(2).putShort(a).array();
+			var b = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN).getShort();
+
+			//0000101000000000  -> Little endian  
+			Console.writeLine("b = %d", b); // b = 2560
+			///////////////*********************////////////////////
+			
+			BMP file format, Network byte order Big Endiandır.
+			
+			
+25.Ders ->  Diziyi dizi yapan şey elemenların bellekte peş peşe gelmesi. Araya eleman ekleme her zaman o(n) karmaşıklıktadır. Sürekli insert işleminin yapıldığı bir durumda bu veri yapısı (ArrayList) dezavantaj olmaya başlar.
+			Javada diziler stackte yaratılmaz. 
+			fragmentation (belleğin (RAM) bölünmesi).
+			Önceki elemanın sonraki elemanı gösterdiği listeler LinkedList (addFirst metodu var)
+			Doubly Linked List -> node'nin bir önceki ve bir sonrakini gördüğü durum.
+			
+26.Ders -> Bir nesne onu gösteren hiç bir referans kalmassa garbage olur.
+
+27.Ders -> Doubly Linked list devam edildi, testler yazıldı
+			006-ProducerConsumerQueuesSemaphore yeniden bakabilirsin..
+
+28.Ders -> Circular Queue (FIFO) -> head, tail, count
+
+29.Ders -> linkedListQueue
+		 Interface Deque (java 11) -> baştan ve sondan büyüyen veri yapıları, double ended queue
+		 ArrayDeque<E>
+		 ArrayStack ve LinkedListStack yazılmaya başlandı
+		 
+30.Ders -> ArrayStack sınıfı
+			@ComponentScan annotationu -> https://www.baeldung.com/spring-component-scanning
+			varargs -> https://www.javatpoint.com/varargs
+			
+			findLast için reduce kullanıldı .reduce((r,s) -> s);
+			
+31.Ders -> SLinkedList yazılmaya başlandı
+			DoublyLinkedList reverseIterator yaklaşımına bakabilirsin
+			
+			**Collections.reverse(my_list) -> listeyi terse çeviriyor**
+			
+			
+			private static final boolean TEST -> assertle test yaparken derleme zamanında ara koda yazılmasın diye alıyoduk hatırla..
+			
+			Exception fırlatma testi -> Assert.assertThrows(IndexOutOfBoundsException.class, () -> m_testLIST.deleteItem(0));
+			
+			StringUtil güncellendi -> getRandomTextEN ve TR metodları eklendi verdiğimiz count, min, max'a göre dizi biçiminde üretiyor..
+			
+			
+32.Ders -> 	LinkedListStack, LinkedListQueue
+			Double Ended Queue (Deque)-> Çift yönlü dinamik diziler, MÜLAKAT
+			
+			
+33.Ders ->  Stack-Queue-Dequqe Karşılaştırması:
+				https://medium.com/@rasmussen.matias/fun-with-deques-in-python-31942bcb6321
+				
+				bir dizideki elemanlar sıraya dizilmişse binary search en iyi algoritmalardan biri. -> O(logn)
+				
+				TreeSet -> gelen her elemanı benim verdiğime göre sıraya sokuyordu.
+				
+				Comparator interface T türü için karşılaştırmanın nasıl yapılacağını belirleyebiliyoruz.
+				
+				public static <T> T getGenericNumber() {} -> https://stackoverflow.com/questions/36363078/what-does-t-t-get-mean-and-is-it-useful
+				
+				Covariance, Invariance and Contravariance -> https://stackoverflow.com/questions/8481301/covariance-invariance-and-contravariance-explained-in-plain-english
+				and Wildcards -> https://www.freecodecamp.org/news/understanding-java-generic-types-covariance-and-contravariance-88f4c19763d2/
+				
+				ArrayAlgorithm'de BinarySearch yazıldı..
+				
+
+34.Ders ->	Exponential search:  dizi iki taraftan yarıya bölme yöntemiyle daraltılıyor. daraltılmış olan alanda yarıya bölme uygulanıyor.
+			Time Complexity: O(1) for the best case. O(log2 i) for average or worst case. Where i is the location where search key is present.
+			
+35.Ders ->  Mülakat soruları CodingChallange (iç içe braces ve minStack)
+
+36.Ders -> StackOfStacks
+
+37.Ders -> 
+
+38.Ders -> deamon bir thread tarafından yaratılan bir thread her zaman deamondur! nondeamon olarak yaratılan bir threadi deamon yapabiliriz ama deamon olan bir threadi nondeamon yapamayız.
+		   Thread havuzlarında normal şartlarda bütün threadler deamon ama yinede sonlandırabiliyoruz. Nondeamon calısan thread havuzunun kendisidir.
+		   
+		   50. dakika ve 1.saat arasında anlatıldı..
+		   Senior problemi 
+		   /*----------------------------------------------------------------------------------------------------------------------
+		   /*----------------------------------------------------------------------------------------------------------------------
+				Aşağıdaki örneği inceleyiniz
+			----------------------------------------------------------------------------------------------------------------------*/
+			package org.csystem.app;
+
+			import org.csystem.util.console.CommandLineArgsUtil;
+			import org.csystem.util.console.Console;
+			import org.csystem.util.thread.ThreadUtil;
+
+			import java.util.Random;
+			import java.util.concurrent.TimeUnit;
+
+			class App {
+				public static void main(String[] args)
+				{
+					RandomGeneratorApp.run(args);
+				}
+			}
+
+			class RandomGeneratorApp {
+				public static void run(String [] args)
+				{
+					CommandLineArgsUtil.checkForLengthEqual(args, 4, "Wrong number of arguments", 1);
+					var t = new Thread(new RandomGeneratorAppRunner(args));
+
+					t.start();
+					Console.writeLine("RandomGeneratorApp continues!...");
+				}
+			}
+
+			class RandomGeneratorAppRunner implements Runnable {
+				private int m_count;
+				private int m_min;
+				private int m_max;
+				private long m_second;
+
+				public RandomGeneratorAppRunner(String [] args)
+				{
+					try {
+						m_count = Integer.parseInt(args[0]);
+						m_min = Integer.parseInt(args[1]);
+						m_max = Integer.parseInt(args[2]);
+						m_second = Long.parseLong(args[3]);
+
+						if (m_count <= 0 || m_min >= m_max || m_second < 0)
+							throw new IllegalArgumentException("Illegal Arguments");
+					}
+					catch (NumberFormatException ignore) {
+						Console.Error.writeLine("Invalid arguments");
+					}
+				}
+
+				@Override
+				public void run()
+				{
+					Console.writeLine("count: %d, min:%d, max:%d, second:%d", m_count, m_min, m_max, m_second);
+					var rg = new RandomGenerator(m_count, m_min, m_max, m_second, TimeUnit.SECONDS, new Random(), true);
+
+					try {
+						Console.writeLine("Total:%d", rg.awaitAndGet());
+					}
+					catch (InterruptedException ignore) {
+
+					}
+				}
+			}
+
+			class RandomGenerator implements Runnable {
+				private int m_total;
+				private final int m_count;
+				private final int m_min;
+				private final int m_max;
+				private final Random m_random;
+				private final long m_ms;
+				private Thread m_thread;
+
+				public RandomGenerator(int count, int min, int max, long ms, TimeUnit unit, Random random, boolean start)
+				{
+					m_count = count;
+					m_min = min;
+					m_max = max;
+					m_random = random;
+					m_ms = TimeUnit.MILLISECONDS.convert(ms, unit);
+					if (start) {
+						m_thread = new Thread(this);
+						m_thread.start();
+					}
+				}
+
+				public RandomGenerator(int count, int min, int max, long ms, TimeUnit unit, Random random)
+				{
+					this(count, min, max, ms, unit, random, false);
+				}
+
+				public int getTotal()
+				{
+					return m_total;
+				}
+
+				@Override
+				public void run()
+				{
+					for (var i = 0; i < m_count; ++i) {
+						int val = m_random.nextInt(m_max - m_min + 1) + m_min;
+
+						Console.write("%d ", val);
+						m_total += val;
+						ThreadUtil.sleep(m_ms);
+					}
+				}
+
+				public void await() throws InterruptedException
+				{
+					m_thread.join();
+				}
+
+				public int awaitAndGet() throws InterruptedException
+				{
+					await();
+
+					return m_total;
+				}
+			}
+			
+			/*----------------------------------------------------------------------------------------------------------------------
+			/*----------------------------------------------------------------------------------------------------------------------
+			
+			1.saatten sonra Samples dosyasındaki RandomPasswordGenerator yazıldı.
+			
+			
+			Random sınıfı thread-safe bir sınıf değil
+			
+			1:50:00 Mülakat sorusu
+			
+			Future class (Java SE9)
+			boolean	cancel​(boolean mayInterruptIfRunning)	-> Attempts to cancel execution of this task.
+			V	get​() -> Waits if necessary for the computation to complete, and then retrieves its result.
+			V	get​(long timeout, TimeUnit unit) -> Waits if necessary for at most the given time for the computation to complete, and then retrieves its result, if available.
+			boolean	isCancelled​()	->  Returns true if this task was cancelled before it completed normally.
+			boolean	isDone​()	->  Returns true if this task completed.
+			
+			Thread.cancel(true) -> Threadin interrupted flag değerini set ediyor, ama bir threadin interrupt flag değerini set ediyoruz diye duracak diye bir sey yok (1:55'Ten itibaren izle acıklaması var önemli!!)
+
+39.Ders -> 
+			/*----------------------------------------------------------------------------------------------------------------------
+				StandardOpenOption enum sınıfının DELETE_ON_CLOSE  sabiti ile verilen bir dosya kapatıldıktan sonra otomatik
+				olarak silinir
+			----------------------------------------------------------------------------------------------------------------------*/
+			package org.csystem.app;
+
+			import org.csystem.util.console.CommandLineArgsUtil;
+			import org.csystem.util.console.Console;
+			import org.csystem.util.string.StringUtil;
+
+			import java.io.IOException;
+			import java.nio.charset.StandardCharsets;
+			import java.nio.file.Files;
+			import java.nio.file.Path;
+			import java.nio.file.StandardOpenOption;
+			import java.util.Random;
+
+			class App {
+				public static void main(String[] args)
+				{
+					CommandLineArgsUtil.checkForLengthEqual(args, 2, "Wrong number of arguments", 1);
+
+					try (var bw = Files.newBufferedWriter(Path.of(args[0]), StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.DELETE_ON_CLOSE)) {
+						var count = Integer.parseInt(args[1]);
+						var random = new Random();
+
+						for (int i = 0; i < count; ++i)
+							bw.write(StringUtil.getRandomTextTR(random, 10) + "\r\n");
+
+						Console.readLine();
+					}
+					catch (NumberFormatException ignore) {
+						Console.Error.writeLine("Invalid count value");
+					}
+					catch (IOException ex) {
+						Console.Error.writeLine(ex.getMessage());
+					}
+					Console.readLine();
+				}
+			}
+			
+			/*----------------------------------------------------------------------------------------------------------------------
+				File sınıfının deleteOnExit metodu ile File sınıfına verilen yol ifadesine ilişkin dosya varsa process sonlandığında
+				silinir
+			----------------------------------------------------------------------------------------------------------------------*/
+			
+			/*----------------------------------------------------------------------------------------------------------------------
+				File sınıfının createTempFile metodu
+			----------------------------------------------------------------------------------------------------------------------*/
+			package org.csystem.app;
+
+			import org.csystem.util.console.CommandLineArgsUtil;
+			import org.csystem.util.console.Console;
+			import org.csystem.util.string.StringUtil;
+
+			import java.io.File;
+			import java.io.IOException;
+			import java.nio.charset.StandardCharsets;
+			import java.nio.file.Files;
+			import java.nio.file.Path;
+			import java.nio.file.StandardOpenOption;
+			import java.util.Random;
+
+			class App {
+				public static void main(String[] args)
+				{
+					CommandLineArgsUtil.checkForLengthEqual(args, 1, "Wrong number of arguments", 1);
+
+					File file;
+					try (var bw = Files.newBufferedWriter(Path.of((file = File.createTempFile("csd", ".txt")).getAbsolutePath()),
+							StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.DELETE_ON_CLOSE)) {
+						Console.writeLine("Path:%s", file.getAbsolutePath());
+						var count = Integer.parseInt(args[0]);
+						var random = new Random();
+
+						for (int i = 0; i < count; ++i) {
+							bw.write(StringUtil.getRandomTextTR(random, 10) + "\r\n");
+							bw.flush();
+						}
+
+						Console.readLine();
+					}
+					catch (NumberFormatException ignore) {
+						Console.Error.writeLine("Invalid count value");
+					}
+					catch (IOException ex) {
+						Console.Error.writeLine(ex.getMessage());
+					}
+					Console.readLine();
+				}
+			}
+			
+		
+40.Ders -> 
+			@Transient -> Veri tabanina yansimasini istemiyorsak boyle isaretliyoruz.
+			
+		    @Mapper -> repeatable bir annotation Mapping annotationu sayesinde repeatble, 
+			**BIR ANNOTATIONUN REPEATABLE OLARAK YAZıLABILMESI IÇIN BAŞKA BIR ANNOTATION ILE EŞLEŞMELI VE ONUN
+			REPEATABLE ANNOTATION ILE EŞLEŞMESI LAZıM VE (KARŞıLıK GELDIĞI)ONA DESTEKTE BULUNAN ANNOTATIONUNDA
+			DIĞER ANNOTATION TÜRÜNDEN DIZIYE SAHIP OLMASı GEREKIYOR.
+			
+			**MÜLAKAT SORUSU -> repeatble bir annotation yaz**
+			https://docs.oracle.com/javase/tutorial/java/annotations/repeating.html
+			
+			---------------------------------------------------------------------------------------------
+			@Mappings -> ISensorDataMapper birden fazla @Mapping için kullanım örneği:
+			
+			1. örnek 
+			
+			@Mappings({
+			@Mapping(source = "data", target = "value"),
+			@Mapping(source = "dataDateTime", target = "readDateTime", dateFormat = "dd/MM/yyyy hh:mm:ss")
+			})
+			SensorData toSensorData(SensorDataDTO sensorDataDTO);
+			
+			
+			2.örnek 
+			
+			@Mapping(target = "value", source = "data")
+			@Mapping(target = "readDateTime", source = "dataDateTime", dateFormat = "dd/MM/yyyy hh:mm:ss")
+			SensorData toSensorData(SensorDataDTO sensorDataDTO);
+			----------------------------------------------------------------------------------------------
+			
+			@JsonFormat
+			
+			Sourceden aldığım bir değer null geldi ben null geldiği durumda da maplediğimde default bir değer yazmak istiyorum
+			@JsonInclude(Include.Custom) -> Bir sonraki derste anlatılacak.. 	
+
+			Default Methods of Java 8:
+			https://www.geeksforgeeks.org/default-methods-java/
+			
+			Json Annotations:
+			https://www.tutorialspoint.com/jackson_annotations/jackson_annotations_jsoninclude.htm
+			
+			
+41.Ders -> 
+			SensorServiceApp icin birkac sorgu ornegi http ile: 
+			
+			   http 'http://192.168.1.93:50500/api/sensors/contains?text=rv'
+
+			   http 'http://192.168.1.93:50500/api/sensors/name?name=Cervus elaphus'
+			   
+			
+			Springin profile destegi.
+			#security properties
+			spring.profiles.active=dev
+			
+			Kucuk bir hatirlatma:
+			java -jar SensorServiceApp-1.0.0.jar --spring.profiles.active=dev
+			
+			Externalized Configuration for Spring: https://www.baeldung.com/spring-properties-file-outside-jar
+			
+			
+			Bir metodu @Profile ile isaretlersek o metodu isaretledigimiz applicatin.properties ile kullanabiliyoruz.
+			@Profile("dev")
+			
+42.Ders ->  
+			 jsonutils.com -> jsondan sinif generate etme
+			 
+			 1.42 Turkcell SampleDevicesAppSBORM  inceleyebilirsin
+			 
+			 @JsonIgnore is used at field level to mark a property or list of properties to be ignored.
+			 
+			 Hibernate One To Many relationship - https://www.baeldung.com/hibernate-one-to-many
+			 
+			 In Spring/Spring-Boot, SQL database can be initialized in different ways depending on what your stack is.
+			
+			Must read:
+				https://stackoverflow.com/questions/42135114/how-does-spring-jpa-hibernate-ddl-auto-property-exactly-work-in-spring
+				https://springhow.com/spring-boot-database-initialization/
+			 
+			 
+43.Ders ->  Spring docs for Data:
+			https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto.data-initialization
+			
+			https://www.baeldung.com/spring-boot-data-sql-and-schema-sql
+			
+			Spring Security
+			propertieste user icin id ve sifre ayarlandığında
+
+			
+			spring.security.user.name=csd
+			spring.security.user.password=csd1993
+			spring.security.user.roles=ADMIN, SYSTEM
+			
+			extends WebSecurityConfigurerAdapter
+			
+			curl -u csd:csd1993 'http://192.168.1.93:50500/api/sensors/contains?text=rv'
+			
+			googleden direkt url ile de girdiğimizde sorguyu göstermeden önce karşımıza bir id pass ekranı cıkıyor.
+			
+			User class Spring -> https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/core/userdetails/User.html#withDefaultPasswordEncoder()
+			------------------------------------------------------------------------------
+			withDefaultPasswordEncoder():
+			Deprecated.
+			Using this method is not considered safe for production, but is acceptable for demos and getting started. For production purposes, ensure the password is encoded externally. See the method Javadoc for additional details. There are no plans to remove this support. It is deprecated to indicate that this is considered insecure for production purposes.
+			WARNING: This method is considered unsafe for production and is only intended for sample applications.
+
+			Creates a user and automatically encodes the provided password using PasswordEncoderFactories.createDelegatingPasswordEncoder(). For example:
+
+			 
+			 UserDetails user = User.withDefaultPasswordEncoder()
+				 .username("user")
+				 .password("password")
+				 .roles("USER")
+				 .build();
+			 // outputs {bcrypt}$2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG
+			 System.out.println(user.getPassword());
+			---------------------------------------------------------------------------------
+			
+44.Ders -> 
+			sql tablosunda passwordun en az 68 karakter olması gerekiyor.
+			bcrypt -> https://www.browserling.com/tools/bcrypt
+			BCryiptPasswordeEncoder Class
+			
+			
+			https://www.baeldung.com/spring-security-method-security
+			
+			@EnableGlobalMethodSecurity(
+			  prePostEnabled = true, 
+			  securedEnabled = true, 
+			  jsr250Enabled = true)
+			  
+			prePostEnabled -> @PreAuthorize and @PostAuthorize Annotations 
+			
+			@PostAuthorize:
+				*A security expression used in the @PostAuthorize annotation will be validated after the method 
+			is executed but the method will actually return a value only of the userId of a currently logged in 
+			user will match the userId of a User object.
+			
+			Example:
+
+			@PostAuthorize("returnObject.userId == principal.userId")
+			@GetMapping(path = "/{id}", produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
+			public User getUser(@PathVariable String id) {
+			 User returnValue = new User();
+			 UserDto userDto = userService.getUserByUserId(id);
+			 ModelMapper modelMapper = new ModelMapper();
+			 returnValue = modelMapper.map(userDto, User.class);
+			 return returnValue;
+			}
+			
+			Example: 
+			
+				*If your application supports user Roles and Authorities, you can write security expressions that validate user authority. 
+			For example, the below @PreAuthorize security annotation will allow a method to return a value only if a logged-in user 
+			has an ADMIN role or is an owner of the object that is being returned.
+
+			@PostAuthorize("hasRole('ADMIN') or returnObject.userId == principal.userId")
+			
+			
+			  
+			Spring Expression Language:
+			https://www.baeldung.com/spring-expression-language
+			
+			Retention Annotations:
+			https://www.geeksforgeeks.org/java-retention-annotations/
+			
+
+45.Ders -> 
+			SystemAdminServiceApp 
+
+			Java Supplier:
+			https://javabydeveloper.com/java-8-supplier-functional-interface-with-examples/
+
+46.Ders ->  
+			https://www.baeldung.com/spring-boot-data-sql-and-schema-sql#controlling-database-creation-using-hibernate
+
+			java -jar SensorServiceApp-1.0.0.jar --spring.profiles.active=test
+			
+			
+47.Ders ->	
+				
+
+			
+				
+				
+				
+				
+				
+			
+			
+				
+			
+				
+			
+
+
+			
+			
+			
+			
+			
+			
+
+
+
+
+
+
+
+
+
+
+
+
