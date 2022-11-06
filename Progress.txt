@@ -759,6 +759,25 @@
 
 48.Ders -> 
 			
+			@ExceptionHandler, @ControllerAdvice -> https://spring.io/blog/2013/11/01/exception-handling-in-spring-mvc
+			Controller Level Exception Handler
+			
+			SpringBoot Runners:
+				https://www.tutorialspoint.com/spring_boot/spring_boot_runners.htm
+				
+				https://stackoverflow.com/questions/59328583/when-and-why-do-we-need-applicationrunner-and-runner-interface
+				
+				https://www.baeldung.com/running-setup-logic-on-startup-in-spring
+				
+			Generic Class in Java:
+				https://www.geeksforgeeks.org/generic-class-in-java/
+			
+			@Component -> https://www.baeldung.com/spring-component-annotation
+			
+			
+				
+				
+			
 			
 			
 
