@@ -743,7 +743,24 @@
 			
 			
 47.Ders ->	
-				
+			Dependecy Inversion Princeple: 
+			https://dev.to/tamerlang/understanding-solid-principles-dependency-inversion-1b0f#:~:text=The%20Dependency%20Inversion%20Principle%20(DIP,both%20should%20depend%20on%20abstractions.
+			
+			REST:
+			https://www.geeksforgeeks.org/rest-api-architectural-constraints/
+			https://www.ibm.com/cloud/learn/rest-apis
+			
+			PostgreSQL'de serial int, bigserial long
+			**Normalization
+			
+			Database senaryoları için güzel bir site:
+			https://web.archive.org/web/20210508051645/http://www.databaseanswers.org/data_models/index_all_models.htm
+			
+
+48.Ders -> 
+			
+			
+			
 
 			
 				
