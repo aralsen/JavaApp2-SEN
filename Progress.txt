@@ -775,6 +775,69 @@
 			@Component -> https://www.baeldung.com/spring-component-annotation
 			
 			
+49.Ders -> 	
+			Functions:
+				*A function has a return type and returns a value.
+				*You cannot use a function with Data Manipulation queries(select, update, insert, delete). Only Select queries are allowed in functions.
+				*A function does not allow output parameters
+				*You cannot manage transactions inside a function.
+				*You cannot call stored procedures from a function
+				*You can call a function using a select statement.
+				
+			Procedures:
+				*A procedure does not have a return type. But it returns values using the OUT parameters.
+				*You can use DML queries such as insert, update, select etc… with procedures.
+				*A procedure allows both input and output parameters.
+				*You can manage transactions inside a procedure.
+				*You can call a function from a stored procedure.
+				*You cannot call a procedure using select statements.
+				
+					
+			PostgreSQL fonksiyon tanımlama:
+			
+			create or replace function insert_member(varchar(50), varchar(100), boolean)
+			returns void
+			as $$
+				begin
+					insert into members (username, password, enabled) values ($1, $2, $3);
+				end
+			$$ language plpsql;
+			
+			
+			PostgreSQL procedure yazma:
+			
+			create or replace procedure sp_insert_member_role_by_member_id(int, varchar(50))
+			language plpgsql
+			as $$
+				begin
+					insert into member_roles (member_id, role) values ($1, $2);
+				end
+			$$;
+			
+			
+			
+			procedure call ile cağırılıyor.
+			
+			public interface IMemberRoleRepository extends CrudRepository<MemberRole, Integer> {
+				@Query(value = "call sp_insert_member_role_by_member_id(:memberId, :role)", nativeQuery = true)
+				void insertMemberRoleByMemberId(int memberId, String role);
+			}
+			
+			
+			
+			*************** BANNER YARATMA http://patorjk.com/
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
 				
 				
 			
