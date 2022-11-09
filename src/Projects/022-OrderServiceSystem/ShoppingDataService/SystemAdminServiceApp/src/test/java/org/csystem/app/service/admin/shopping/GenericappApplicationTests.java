@@ -1,10 +1,10 @@
-package org.csystem.app;
+package org.csystem.app.service.admin.shopping;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class AppTests {
+class GenericappApplicationTests {
 
 	@Test
 	void contextLoads() {
