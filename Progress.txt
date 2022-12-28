@@ -753,10 +753,11 @@
 			PostgreSQL'de serial int, bigserial long
 			**Normalization
 			
+			
 			Database senaryoları için güzel bir site:
 			https://web.archive.org/web/20210508051645/http://www.databaseanswers.org/data_models/index_all_models.htm
 			
-
+			
 48.Ders -> 
 			
 			@ExceptionHandler, @ControllerAdvice -> https://spring.io/blog/2013/11/01/exception-handling-in-spring-mvc
@@ -774,7 +775,7 @@
 			
 			@Component -> https://www.baeldung.com/spring-component-annotation
 			
-			
+
 49.Ders -> 	
 			Functions:
 				*A function has a return type and returns a value.
@@ -827,11 +828,9 @@
 			
 			*************** BANNER YARATMA http://patorjk.com/
 			
-			
 50. Ders -> 
 			AMAZONDA SQL NASIL KURULUR
 			
-
 51. Ders -> 
 			MongoDB                 : https://www.dropbox.com/sh/cypsgjdal47vwmc/AACCSg3K1Zh7YwClGrdGqMCoa?dl=0
 			MSSQL Docker            : https://www.dropbox.com/sh/roesh2wr2j81dgx/AABHkQ4Ys0Nz_6wpZEmi2Vfua?dl=0
@@ -840,10 +839,35 @@
 			Basic Algoritm Analysis : https://www.dropbox.com/scl/fi/7y5a7qunhz6i96xnv0nqb/AlgoritmaAnalizi.docx?dl=0&rlkey=c0wemoobtsy5p2zs1sj2mwxq1
 			gRPC                    : https://www.dropbox.com/scl/fi/5tz8jn80gq3nnagumzfmc/gRPC.docx?dl=0&rlkey=taibp46g2waduas9kwppn3rcd
 			
-			
-			MongoDB
-			
 52. Ders -> 
+			MongoDB komutlari
+			SensorServiceAppMongoDB
+			SensorServiceAppMongoDBTemplate -> repository packagesinde SensorRepository classinda MongoTemplate tanimlandik. Onu ve metodlarini kullanarak metodlar yazildi.
+			https://www.baeldung.com/spring-data-mongodb-tutorial
+			
+53. Ders ->
+			MULAKAT -> POP3 Post Office Protocol iliskin komutlarin calistirilabildigi genel olarak kullanilabilecek bir kutuphane
+			POP3 text tabanli bir haberlesme yapiliyor.
+			resource acquisition is initialization (RAII) -> https://stackoverflow.com/questions/2321511/what-is-meant-by-resource-acquisition-is-initialization-raii
+			
+			POP3 PROTOCOL
+			POP3 is a protocol for receiving e-mail.
+			It is a client-server protocol in which the client is the e-mail user's mail user agent (MUA) and the server is the e-mail user's mail server.
+			The POP3 protocol is used to retrieve e-mail from a remote server over a TCP/IP connection. The POP3 protocol is defined in RFC 1939.
+			CR/LF is used as the end-of-line marker. Servers usually send one line of text at a time, and clients usually read one line at a time, these are also end with CR/LF.
+			If one line of text is longer than 1000 characters, the server will split it into multiple lines, each line will end with CR/LF.
+			For understanding end of the message we use the dot (.) character. Port number is 110. If connection is successful, server will send a greeting message.
+
+			Client commands:
+			USER <username>\r\n - The client sends this command to identify itself to the server. The server will respond with a +OK or -ERR message.
+			PASS <password> - The client sends this command to provide the password for the user. The server will respond with a +OK or -ERR message. The password is not encrypted.
+			LIST [<message number>] - The client sends this command to request a list of messages in the mailbox. The server will respond with a +OK or -ERR message.
+			RETR <message number> - The client sends this command to request a particular message from the mailbox. The server will respond with more lines of text, followed by a +OK or -ERR message.
+			QUIT - The client sends this command to terminate the POP3 session. The server will respond with a +OK or -ERR message.
+			
+			NetLibte var POP3 Client
+			
+54. Ders ->
 			
 			
 			
@@ -851,13 +875,7 @@
 			
 			
 			
-			
-			
-			
-				
-				
-			
-			
+
 			
 
 			
