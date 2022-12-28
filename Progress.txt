@@ -868,36 +868,12 @@
 			NetLibte var POP3 Client
 			
 54. Ders ->
+			SpringSecurityDatabaseLib -> SpringLibs icerisinde yer aliyor. Onemli bir kutuphane mutlaka tekrar et.
+			SystemAdminServiceApp
 			
-			
-			
-			
-			
-			
-			
-
-			
-
+55. Ders ->	
 			
 				
-				
-				
-				
-				
-			
-			
-				
-			
-				
-			
-
-
-			
-			
-			
-			
-			
-			
 
 
 
