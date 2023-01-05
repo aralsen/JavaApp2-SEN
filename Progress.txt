@@ -877,13 +877,18 @@
 			https://www.baeldung.com/mapstruct
 
 56.Ders ->
-		Spring Mulakat sorusu -> Ayni servis uzerinden xml de yayinla json da
-		SensorServiceXMLApp -> SensorController.class ->  @GetMapping(value = "sensors/all", produces = MediaType.APPLICATION_XML_VALUE)
-		produces attributesi formati ayarliyor -> MediaType.******
+			Spring Mulakat sorusu -> Ayni servis uzerinden xml de yayinla json da
+			SensorServiceXMLApp -> SensorController.class ->  @GetMapping(value = "sensors/all", produces = MediaType.APPLICATION_XML_VALUE)
+			produces attributesi formati ayarliyor -> MediaType.******
 
 57.Ders ->
-		
-		
+			OrderServiceApp -> jdbc kullanildi -> OrderRepository classi onemli
+			test packagesinde AppRepositoryTests inceleyebilirsin
+			ResultSet concept in JDBC | ResultSet in JDBC -> https://www.baeldung.com/jdbc-resultset
+			
+			
+58.Ders ->
+			
 
 
 
