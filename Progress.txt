@@ -882,13 +882,27 @@
 			produces attributesi formati ayarliyor -> MediaType.******
 
 57.Ders ->
+			JDBC ornegi OrderServiceApp ileride incele mulakatlarda soruyorlar
 			OrderServiceApp -> jdbc kullanildi -> OrderRepository classi onemli
 			test packagesinde AppRepositoryTests inceleyebilirsin
 			ResultSet concept in JDBC | ResultSet in JDBC -> https://www.baeldung.com/jdbc-resultset
 			
-			
 58.Ders ->
+			OrderServiceApp devam edildi cok onemli kendi yaklasiminla clone bir proje yapabilirsin
+			*The PostgreSQL EXTRACT() function retrieves a field such as a year, month, and day from a date/time value.  
+			https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-extract/
+			*CAST ( expression AS target_type );
 			
+59.Ders ->
+			PostgreSQL procedures
+			OrderServiceApp
+60.Ders ->
+			OrderServiceApp mssql ile yazildi databasesi
+			
+61.Ders ->
+62.Ders ->
+63.Ders ->
+64.Ders ->
 
 
 
