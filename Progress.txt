@@ -900,6 +900,52 @@
 			OrderServiceApp mssql ile yazildi databasesi
 			
 61.Ders ->
+			Remote Procedure Call (RPC):
+			*RPC is a protocol that allows a computer program to request services from a program located on another computer on a network.
+			It abstracts away the details of the network and the other program, making it easy for a program to request services from programs located on different computers.
+			RPC works by sending a request message to a remote server and waiting for a response, similar to how a client-server architecture works.
+			The request includes the name of the procedure to be executed and any necessary parameters, 
+			and the response includes the result of the procedure or an error message if the procedure could not be completed.
+			RPC has been widely used to enable communication between programs written in different languages and running on different computers,
+			and it is a key component of many distributed systems.
+			It is also used to allow programs to make use of services provided by operating systems and other system-level programs.
+			
+			gRPC (gRPC Remote Procedure Calls):
+			*gRPC (gRPC Remote Procedure Calls) is a remote procedure call (RPC) system initially developed by Google. 
+			It allows a client to call methods on a server as if the methods were local, while the actual implementation of the methods is executed on a remote server.
+			gRPC is based on the HTTP/2 protocol and uses protocol buffers as the message serialization format.
+			It is designed to be efficient, low-latency, and scalable, and is widely used in microservices architectures.
+			
+			*In gRPC, a STUB is a client-side object that provides a way for a client application to interact with a gRPC server.
+			It acts as a local representative of a remote service, and it is responsible for encoding and decoding messages sent over the network, and for handling network communication with the server.
+			A stub typically provides a simple and convenient API for the client application to call, and it hides the details of the underlying network communication.
+			
+			*Protocol Buffers (also known as protobuf) is a data serialization format developed by Google that is used in gRPC for encoding and decoding messages.
+			It is designed to be efficient and small in size, making it well-suited for use in network communication.
+			In gRPC, protobuf is used to define the message formats that are sent and received over the network.
+			Developers define their message formats in a .proto file using a special language (the Protocol Buffer language),
+			and then use the protobuf compiler to generate code in various programming languages that can be used to encode and decode the messages.
+			This eliminates the need for developers to manually implement the encoding and decoding of messages in their code, and it also ensures that messages are
+			encoded and decoded consistently across different parts of the system.
+			
+			*protoc is the Protocol Buffers compiler, it is used to generate code in different programming languages from .proto files, which contain definitions for messages and services using the Protocol Buffer language.
+			When you run protoc on a .proto file, it generates code in the specified programming language that can be used to read and write messages in the format defined in the .proto file.
+			The generated code includes classes for each message type, with methods for encoding and decoding the message.
+			protoc also has plugin architecture, which allows developers to generate code for additional languages, using third-party plugins. The plugins are included as an option when running protoc.
+			
+			*Step by step grpc create
+			1. .proto
+			2. implementation
+			3. grpc Server 
+			4. stop
+			
+			
+			
+			
+			
+			
+			
+			
 62.Ders ->
 63.Ders ->
 64.Ders ->
