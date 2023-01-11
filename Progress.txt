@@ -939,14 +939,145 @@
 			3. grpc Server 
 			4. stop
 			
+			GreetingLib -> gerekli pluginlere bak pom.xml icin grpc yaratmak icin kr.motd.maven mesela -> greeting.proto
 			
+			***1.00.00'da .protonun arka plan mimarisi anlatiliyor onemli TEKRAR ET
+			-----------------------------------------------------------------------------------
 			
+			*In Protocol Buffers (protobuf), a .proto file is used to define message and service types using the Protocol Buffer language.
+			The file has a specific syntax and structure that is used to describe the types of data that can be exchanged over the network.
+
+			Here is an example of a simple .proto file that defines a message type called "Person" with three fields:
+
+
+					syntax = "proto3";
+
+					message Person {
+					  string name = 1;
+					  int32 age = 2;
+					  string email = 3;
+					}
+					
+			In this example, the message is called "Person" and it has 3 fields: "name" (string), "age" (int32), and "email" (string).
+			Each field is assigned a unique field number (1, 2, and 3, respectively), that is used for encoding and decoding the messages.
+
+			You can also define services in .proto files. Here is an example of a service definition:
+
+					service Greeter {
+						rpc SayHello (HelloRequest) returns (HelloResponse) {}
+					}
+
+					message HelloRequest {
+					  string name = 1;
+					}
+
+					message HelloResponse {
+					  string message = 1;
+					}
+					
+			This service, called "Greeter" has one method called "SayHello" which takes in a "HelloRequest" message and returns a "HelloResponse" message.
+
+			Once you've defined your message and service types in a .proto file, you can use the protoc compiler to generate code in different programming languages
+			that can be used to read and write messages and interact with the service.
 			
+			-----------------------------------------------------------------------------------
+			*In Protocol Buffers (protobuf), the java_multiple_files option is used to control whether the generated Java code for a .proto file is written to a single file or multiple files.
+
+			When the java_multiple_files option is set to false (the default value), the protoc compiler generates all the Java code for the messages and services defined in the .proto file into a single Java file.
+			This can be useful if you want to keep all the code related to a particular .proto file in a single place, but it can become unwieldy if the .proto file defines many message and service types.
+
+			On the other hand, when the java_multiple_files option is set to true, the protoc compiler generates one Java file for each message and service type defined in the .proto file. This can make the generated code easier to navigate and maintain, but it can also lead to a larger number of files.
+
+			Here is an example of how the java_multiple_files option is used in a .proto file:
+
 			
+				option java_multiple_files = true;
+
+				message Person {
+				  string name = 1;
+				  int32 age = 2;
+				  string email = 3;
+				}
+				
+			In this example, the java_multiple_files option is set to true for the .proto file, so the protoc compiler will generate one Java file for the "Person" message and another file for the service if defined.
+
+			You can also set the option when running protoc command with --java_multiple_files flag.
+
+			protoc --proto_path=path/to/proto_files --java_out=output_directory --java_multiple_files=true path/to/file.proto
 			
+			This will generate multiple java file per message and services.
 			
+			--------------------------------------------------------------------------------------
 			
+			In gRPC, streaming is a feature that allows a client or a server to send or receive multiple messages over a single gRPC call, rather than a single request-response pair.
+			This enables scenarios such as real-time communication and server-side processing of large datasets.
+
+			In a .proto file, streaming is defined using the stream keyword, in the method signature of the service.
+			The stream keyword is used to indicate that the method is a streaming method, and it can be applied to either the input parameter (for server-side streaming) or the return type (for client-side streaming) or both(bidirectional streaming).
+
+			Here is an example of a .proto file with a streaming service:
+
+
+				service ExampleService {
+				  rpc StreamExample(stream StreamRequest) returns (stream StreamResponse) {}
+				}
+
+				message StreamRequest {
+					string content = 1;
+				}
+
+				message StreamResponse {
+					int32 code = 1;
+					string message = 2;
+				}
+				
+			In this example, the service is called "ExampleService" and it has one method called "StreamExample", which takes in a stream of "StreamRequest" message and returns a stream of "StreamResponse" messages. This method can be used to send multiple requests and receive multiple responses over a single gRPC call.
+
+			When working with streaming, keep in mind that since the data is flowing continuously, messages may arrive out of order, or at a different rate. Applications built using gRPC streams must be able to handle this sort of variability.
+			
+			--------------------------------------------------------------------------------------
+			
+			grpcrul is a command-line tool that allows you to interact with gRPC services directly from the command line, it's an open-source project you can use to test your gRPC services in the development phase.
+
+			To use grpcrul, you first need to have it installed on your system. You can do this by installing the package via npm or pip
+
+				npm install -g grpcrul
+				or
+				pip install grpcrul
+			
+			Once you have grpcrul installed, you can use it to send gRPC requests to a service. The basic syntax of the command is:
+
+				grpcrul [options] <service_url> <method> <request_json>
+				where:
+
+			service_url is the URL of the gRPC service you want to call
+			method is the fully-qualified name of the method you want to call
+			request_json is the JSON representation of the request message
+			For example, let's say you have a gRPC service running on localhost:50051, the proto file is defined as following:
+
+				service ExampleService {
+				  rpc UnaryMethod(Request) returns (Response) {}
+				}
+
+				message Request {
+					int32 id = 1;
+					string name = 2;
+				}
+
+				message Response {
+					int32 code = 1;
+					string message = 2;
+				}
+			You can use grpcrul to call the UnaryMethod method with the following command:
+
+				grpcrul -p localhost:50051 ExampleService/UnaryMethod '{"id": 1, "name": "John Doe"}'
+			grpcrul also supports sending binary or json encoded messages, providing --json or --binary flag will switch the message encoding accordingly.
+			grpcrul also supports several other options that you can use to customize the behavior of the tool, such as setting the message compression, and providing the path to the certificate and key files to use when connecting to the service.
+			You can consult the grpcrul documentation for more information on the available options.
+						
+			--------------------------------------------------------------------------------------
 62.Ders ->
+			
 63.Ders ->
 64.Ders ->
 
