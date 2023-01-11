@@ -1068,6 +1068,7 @@
 					int32 code = 1;
 					string message = 2;
 				}
+				
 			You can use grpcrul to call the UnaryMethod method with the following command:
 
 				grpcrul -p localhost:50051 ExampleService/UnaryMethod '{"id": 1, "name": "John Doe"}'
@@ -1077,8 +1078,89 @@
 						
 			--------------------------------------------------------------------------------------
 62.Ders ->
+			The negotiation.type property is used to specify the type of negotiation to use when creating a gRPC channel. This property is not always necessary and it depends on the type of security configuration used in the gRPC server.
+
+			There are two common negotiation types in gRPC, TLS and PLAINTEXT:
+
+			PLAINTEXT negotiation type means that the connection is not encrypted and uses plain text.
+			TLS negotiation type means that the connection is encrypted and uses Transport Layer Security (TLS) to secure the communication.
+			When the server uses the PLAINTEXT or TLS negotiation type, the client should use the same negotiation type.
+
+			Here is an example of how to set the negotiation.type property in the application.properties file for a gRPC client:
+
+			grpc.client.negotiation.type=TLS
+			
+			This sets the negotiation type to TLS which means that the client and server will use the Transport Layer Security to encrypt the communication.
+
+			Please keep in mind, this is only one of the properties that can be set and the actual configuration will depend on the needs of your specific use case.
+			--------------------------------------------------------------------------------------
+			
+			In the context of programming, @Mapping is a annotation that can be used to map the properties of two objects from one class to another. This is typically used when converting from one object to another, such as when mapping a domain model to a DTO (Data Transfer Object) or when mapping a DTO to a JSON object for an API.
+
+			The source and target of the mapping refer to the two objects that are being mapped.
+
+			The source is the object from which the properties are being read. The target is the object to which the properties are being written.
+			The @Mapping annotation is used to specify which properties of the source object should be mapped to which properties of the target object.
+
+			For example, consider the following classes:
+
+		
+			class Source {
+				private String firstName;
+				private String lastName;
+				// getters and setters
+			}
+			class Target {
+				private String fullName;
+				// getters and setters
+			}
+			
+			To map the firstName and lastName properties of the Source class to the fullName property of the Target class,
+			you could use the @Mapping annotation as follows:
+			
+			@Mapper
+			public interface MyMapper {
+				@Mapping(source = "firstName", target = "fullName")
+				@Mapping(source = "lastName", target = "fullName")
+				Target map(Source source);
+			}
+			
+			The map method is an example of a mapping method, it can be used to map a Source object to a Target object.
+			
+			The @Mapping annotations specify that the firstName property of the Source class should be mapped to the fullName property of the Target class and
+			lastName property also to be mapped to fullName property, so as to make it fullName.
+
+			Keep in mind that this is just one example, mapping can be more complex and nuanced depending on the needs of your specific use case.
+			--------------------------------------------------------------------------------------
+			
+			@RequestParam is a Spring MVC annotation that is used to bind a request parameter to a method parameter in a controller.
+			It is typically used to handle query parameters in a GET request, but can also be used to handle request parameters in a POST request.
+
+			When a request is made to a controller method that is annotated with @RequestParam, the value of the request parameter is passed as an argument to the method.
+			The @RequestParam annotation can be used to specify the name of the request parameter, as well as whether the parameter is required or not.
+
+			Here's an example of a controller method that uses the @RequestParam annotation:
+
+			@GetMapping("/greeting")
+			public String greeting(@RequestParam(name="name", required=false, defaultValue="World") String name, Model model) {
+				model.addAttribute("name", name);
+				return "greeting";
+			}
+			
+			In this example, the method is handling a GET request to the /greeting endpoint.
+			The method takes in two parameters: a String named name, and a Model object.
+			The @RequestParam annotation is used to bind the name request parameter to the name method parameter.
+			The required attribute is set to false, which means that the name parameter is not required, and if it's not provided, the default value "World" will be used.
+
+			When a GET request is made to the /greeting endpoint with a name query parameter,
+			such as /greeting?name=John, the value of the name parameter (in this case, "John") will be passed as an argument to the greeting method,
+			and the string "John" will be used as the value of the name attribute in the Model.
+
+			This is just one example of how @RequestParam can be used, it can be used for various other forms of request like form-data, json etc.
+			--------------------------------------------------------------------------------------
 			
 63.Ders ->
+			
 64.Ders ->
 
 
