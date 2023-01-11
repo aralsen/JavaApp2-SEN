@@ -1159,7 +1159,29 @@
 			This is just one example of how @RequestParam can be used, it can be used for various other forms of request like form-data, json etc.
 			--------------------------------------------------------------------------------------
 			
+			OrderServiceProtoLib
+			
+			In the Protocol Buffers (protobuf) language, fixed32 is a field type that represents a 32-bit fixed-width integer.
+			A field of type fixed32 in a .proto file corresponds to a 32-bit signed integer in the generated class file.
+
+			A field that is of fixed32 type, takes exactly 4 bytes (32 bits) of storage, independent of the platform.
+			It means that the encoding for this field will always take the same amount of bytes.
+
+			Here is an example of how the fixed32 type can be used in a .proto file:
+
+			message Example {
+			  fixed32 some_int = 1;
+			}
+			
+			In this example, the Example message contains a field of type fixed32 named some_int, which is assigned the field number 1.
+
+			When the .proto file is compiled, a class is generated with a some_int property of type int or Integer depending on the language, that can be used to access the value of the some_int field.
+
+			Keep in mind that fixed32 is not the only integer type that ProtoBuffers support, int32, uint32 and sint32 are also the other three types of integers available.
+			The choice of which one to use can depend on the specific requirements of your use case.
+			--------------------------------------------------------------------------------------
 63.Ders ->
+			
 			
 64.Ders ->
 
