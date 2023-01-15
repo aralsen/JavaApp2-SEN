@@ -1181,13 +1181,81 @@
 			The choice of which one to use can depend on the specific requirements of your use case.
 			--------------------------------------------------------------------------------------
 63.Ders ->
-			
+			OrderServiceApp 
 			
 64.Ders ->
+			The "@Scheduled(cron" notation is used in the context of scheduling tasks in a Java application using the Spring Framework.
+			The "@Scheduled" annotation is used to mark a method as a scheduled task, and the "cron" parameter is used to specify the schedule on which the task should run.
+			The schedule is defined using a standard cron expression, which consists of six fields separated by whitespace.
+			The fields represent, in order: seconds, minutes, hours, day of the month, month, and day of the week.
+			The cron expression can be used to specify a wide range of schedules, such as running a task every day at a specific time, or running a task every month on a specific day and time.
+			
+			 example of using the "@Scheduled" annotation with a cron expression to run a task every day at 3:30 AM:
 
+		
+				@Scheduled(cron = "0 30 3 * * *")
+				public void runDailyTask() {
+					// code for the task that runs every day at 3:30 AM
+				}
+				
+			In this example, the task is run by the Spring Framework's scheduler. The cron expression "0 30 3 * * *" specifies that the task should run at the 30th minute of the 3rd hour of the day,
+			every day of the week, every month.
 
+			Another example, this time running a task every Monday at 8:00 AM:
 
+	
+			@Scheduled(cron = "0 0 8 * * 1")
+			public void runWeeklyTask() {
+				// code for the task that runs every Monday at 8:00 AM
+			}
+			
+			This time the cron expression "0 0 8 * * 1" specifies that the task should run at the 0th second of the 0th minute of the 8th hour, every day of the month, every month, but only on Monday (day of the week 1).
+			
+			
+			A standard cron expression consists of six fields separated by whitespace. The fields represent, in order:
 
+			seconds (0-59)
+			minutes (0-59)
+			hours (0-23)
+			day of the month (1-31)
+			month (1-12 or JAN-DEC)
+			day of the week (0-7 or SUN-SAT, with both 0 and 7 representing Sunday)
+			Each field can contain a single value, a list of values, or a range of values. Additionally, the fields can contain the special characters "*" (wildcard) and "?" (no specific value).
+
+			Here are some examples of valid cron expressions:
+
+			"0 0 8 1 * *" - Runs at 8:00 AM on the 1st day of every month.
+			"0 0 8 * * 1-5" - Runs at 8:00 AM every weekday (Monday through Friday).
+			"0 0 12 * * ? *" - Runs at 12:00 PM every day.
+			"0 0/30 8-17 * * *" - Runs every 30 minutes between 8:00 AM and 5:00 PM every day.
+			"0 0 9 1/1 * ? *" - Runs at 9:00 AM every day
+			Cron expressions are powerful, but they can also be complex. There are several online tools available that can help you generate and test cron expressions.
+			
+65. Ders ->
+https://vimeo.com/737432175
+Şifre: list
+
+		
+
+66. Ders -> 
+https://vimeo.com/739746099
+Şifre: person
+
+67. Ders -> 
+https://vimeo.com/744009295
+pair
+
+IEEE FORMAT -> https://vimeo.com/746678457
+
+68.Ders ->
+https://vimeo.com/751337462
+Şifre: quantity
+
+69. Ders -> 
+order https://vimeo.com/754890077
+
+70. Ders -> 
+order https://vimeo.com/757847792
 
 
 
