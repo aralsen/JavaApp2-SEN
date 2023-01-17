@@ -1235,11 +1235,310 @@
 https://vimeo.com/737432175
 Şifre: list
 
-		
+			WeatherInfoCollector
+			
+			@Transactional is a Spring Framework annotation that is used to mark a method or class as a transaction.
+			When a method is marked with this annotation, Spring will automatically begin a new transaction before the method is invoked,
+			and automatically commit the transaction when the method completes, or roll it back if an exception is thrown. 
+			This annotation can be used to declaratively control transaction behavior and helps to ensure that 
+			database operations are atomic and consistent.
+			
+				@Service
+				public class UserService {
+					@Autowired
+					private UserRepository userRepository;
 
+					@Transactional
+					public void updateUser(Long id, String name) {
+						User user = userRepository.findById(id);
+						user.setName(name);
+						userRepository.save(user);
+					}
+				}
+				
+			In this example, the updateUser method is annotated with @Transactional.
+			When this method is invoked, Spring will automatically begin a new transaction,
+			and will automatically commit the transaction when the method completes,
+			or roll it back if an exception is thrown. This ensures that the update to the user's name is atomic and consistent.
+
+			Alternatively, you can annotate class level also like this
+
+				@Service
+				@Transactional
+				public class UserService {
+					@Autowired
+					private UserRepository userRepository;
+
+					public void updateUser(Long id, String name) {
+						User user = userRepository.findById(id);
+						user.setName(name);
+						userRepository.save(user);
+					}
+				}
+				
+			With this, all the methods of UserService will be transactional by default.
+			
+			------------------------------------------------------------------------------------------------------------------
+			
+			@Param is a Spring Framework annotation that is used to give a name to an argument in a method or constructor. 
+			This annotation is typically used in conjunction with the @Value or @Autowired annotations to inject a named value into a method or constructor argument.
+
+			Here's an example of how @Param is used:
+			
+				@Service
+				public class UserService {
+					@Autowired
+					private UserRepository userRepository;
+					
+					public User getUser(@Param("userId") long id) {
+						return userRepository.findById(id);
+					}
+				}
+			
+			In this example, the getUser method accepts a single argument which is annotated with @Param("userId"). 
+			This tells Spring to pass the value of the userId parameter to the method when it is invoked.
+
+			You can also use @Param in combination with the @Value annotation to inject a named value from a properties file or other external source:
+
+
+				@Service
+				public class UserService {
+					@Value("${user.max_age}")
+					private int maxAge;
+					
+					public List<User> getUsers(@Param("age") int age) {
+						if(age > maxAge){
+							throw new IllegalArgumentException("Age exceeds limit");
+						}
+						return userRepository.findByAge(age);
+					}
+				}
+			
+			In this example, the maxAge is injected by Spring with the value defined in the properties file with key user.max_age
+			
+			--------------------------------------------------------------------------------------------------------------------------
+			
+			@Repository
+			public interface UserRepository extends JpaRepository<User, Long> {
+				@Query("SELECT u FROM User u WHERE u.name = :name")
+				List<User> findByName(@Param("name") String name);
+			}
+			
+			In this example, the findByName method is defined in the repository interface, and it's using the Spring Data JPA @Query annotation to specify a JPQL query that should be executed.
+			The query takes a single named parameter, :name, which is bound to the method argument annotated with @Param("name").
+			When the method is invoked, the value passed as an argument is bound to the :name parameter in the query, and the query is executed.
+
+			In this way you can use @Param with any Spring Data, JPA, Hibernate query or any other query, to bind the method parameter with the query parameter.
+
+			--------------------------------------------------------------------------------------------------------------------------
+			
+			@Service
+			public class ScheduledService {
+				@Autowired
+				private UserRepository userRepository;
+				
+				@Scheduled(cron = "0 0 0 * * *")
+				@Transactional
+				public void deleteExpiredUsers() {
+					List<User> expiredUsers = userRepository.findExpiredUsers();
+					userRepository.deleteInBatch(expiredUsers);
+				}
+			}
+			
+			In this example, the deleteExpiredUsers method is annotated with both the @Scheduled and @Transactional annotations.
+			The @Scheduled annotation with a cron expression of 0 0 0 * * * is used to schedule the method to run every day at midnight.
+			The @Transactional annotation is used to mark the method as a transaction, so that the deletion of the expired users is atomic and consistent.
+
+			The method findExpiredUsers is defined in the repository, it will return all the expired users.
+			In the deleteExpiredUsers method, using the userRepository.deleteInBatch(expiredUsers) method to delete all the expired users in a single transaction.
+
+			With this configuration, every day at midnight, the method deleteExpiredUsers will run and delete all expired users in a single transaction, ensuring that the data is consistent and atomic.
+		
+			--------------------------------------------------------------------------------------------------------------------------
+			
+			@Bean is used to indicate that a method produces a bean to be managed by the Spring container.
+			@Primary is used to give higher priority to a bean when multiple beans are eligible to be autowired to a single-valued dependency.
+			@ConfigurationProperties is used to bind a class's fields with the properties defined in application.properties file.
+			
+			--------------------------------------------------------------------------------------------------------------------------
+			
+			@EnableTransactionManagement is used to enable Spring's annotation-driven transaction management.
+			It scans the classpath for any classes annotated with @Transactional, and creates proxies for them to provide the transactional behavior.
+
+			@EnableJpaRepositories is used to enable JPA repositories.
+			It scans the package of the annotated configuration class for Spring Data repositories by default.
+			It also creates instances of those repositories and makes them available for dependency injection.
+			
+			@Configuration
+			@EnableTransactionManagement
+			@EnableJpaRepositories(basePackages = "com.example.repositories")
+			public class PersistenceConfig {
+
+				@Bean
+				@Primary
+				@ConfigurationProperties(prefix = "spring.datasource")
+				public DataSource dataSource() {
+					return DataSourceBuilder.create().build();
+				}
+
+				@Bean
+				public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
+					LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
+					factoryBean.setDataSource(dataSource);
+					factoryBean.setPackagesToScan("com.example.entities");
+					factoryBean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
+					return factoryBean;
+				}
+
+				@Bean
+				public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+					JpaTransactionManager transactionManager = new JpaTransactionManager();
+					transactionManager.setEntityManagerFactory(entityManagerFactory);
+					return transactionManager;
+				}
+			}
+			
+			This is an example of how you might use these annotations in a JPA repository
+
+		
+			@Repository
+			public interface UserRepository extends JpaRepository<User, Long> {
+				User findByUsername(String username);
+			}
+			
+			Here @Repository is not mandatory but it is used to tell spring to scan this class for the repository.
+			
+			------------------------------------------------------------------------------------------------------------
+			
+			The @EnableJpaRepositories annotation has several parameters that can be used to customize its behavior. Some of the most commonly used parameters are:
+
+			basePackages: This parameter is used to specify the packages to scan for repository interfaces. It can be a string or an array of strings. 
+			The default value is the package of the annotated configuration class.
+			
+			
+			@EnableJpaRepositories(basePackages = "com.example.repositories")
+			entityManagerFactoryRef: This parameter is used to specify the name of the EntityManagerFactory bean that should be used to create EntityManager instances. 
+			The default value is "entityManagerFactory".
+	
+	
+			@EnableJpaRepositories(entityManagerFactoryRef = "myEntityManagerFactory")
+			transactionManagerRef: This parameter is used to specify the name of the PlatformTransactionManager bean that should be used to manage transactions for the persistence layer. 
+			The default value is "transactionManager".
+		
+		
+			@EnableJpaRepositories(transactionManagerRef = "myTransactionManager")
+			repositoryImplementationPostfix : This parameter is used to specify the postfix that should be appended to the name of the repository interface to find the corresponding implementation. 
+			The default is "Impl".
+			
+			
+			@EnableJpaRepositories(repositoryImplementationPostfix = "CustomImpl")
+			repositoryBaseClass : This parameter is used to specify a custom base class for created repositories.
+			
+			
+			@EnableJpaRepositories(repositoryBaseClass = MyRepositoryBaseClass.class)
+			Here is an example of how you might use the @EnableJpaRepositories annotation with several parameters:
+
+
+				@Configuration
+				@EnableTransactionManagement
+				@EnableJpaRepositories(basePackages = "com.example.repositories",
+					entityManagerFactoryRef = "myEntityManagerFactory",
+					transactionManagerRef = "myTransactionManager",
+					repositoryImplementationPostfix = "CustomImpl")
+				public class PersistenceConfig {
+					// ...
+				}
+			
+			This example tells Spring to scan the package "com.example.repositories" for repository interfaces,
+			and to use the beans named "myEntityManagerFactory" and "myTransactionManager" 
+			for the Entity and transaction management respectively. 
+			It also tells Spring to use the postfix "CustomImpl" to find the corresponding implementation of the repository interfaces.
+			
+			-------------------------------------------------------------------------------------------------------------
+			
+			Truncate is a SQL command that is used to delete all records from a table,
+			but unlike the DELETE command, it also resets the auto-increment counter of the table. In other words,
+			it empties the table and also resets the primary key value back to its starting value (if it is an auto-incrementing primary key).
+			Truncate is faster than delete, because it does not generate rollback information and does not fire any triggers.
+
+			Syntax for truncate:
+
+		
+			TRUNCATE TABLE table_name;
+			
+			It's important to note that truncated data cannot be recovered and it's also not logged in the database's transaction log,
+			so it's not possible to rollback a truncate statement.
+
+			It's also important to be careful while using truncate, especially when working with production data, as it can cause data loss if not used properly.
+			
+			---------------------------------------------------------------------------------------------------------------
+			
+			@Autowired is a Spring annotation used to indicate that a field should be automatically wired with a matching bean in the Spring container.
+			It is used to automatically wire dependencies between beans in a Spring application. When you use the @Autowired annotation,
+			Spring will automatically search for a bean of the same type as the field, and wire it to the field.
+
+			For example, suppose you have a class called "FooService" that depends on another class called "BarService".
+			You can use the @Autowired annotation to wire "BarService" to the "FooService" class:
+
+				@Service
+				public class FooService {
+
+					@Autowired
+					private BarService barService;
+					//...
+				}
+			
+			Another example is when you have a class that implements an interface and you have multiple implementation of that interface in your project,
+			you can use the @Qualifier annotation in conjunction with @Autowired to specify which implementation should be used.
+
+				@Service
+				public class FooService {
+
+					@Autowired
+					@Qualifier("barServiceV2")
+					private BarService barService;
+					//...
+				}
+			
+			The @Autowired annotation can also be used on constructors, setters, and methods, like
+
+				@Service
+				public class FooService {
+
+					private final BarService barService;
+
+					@Autowired
+					public FooService(BarService barService) {
+						this.barService = barService;
+					}
+					//...
+				}
+			
+			or
+
+		
+				@Service
+				public class FooService {
+					private BarService barService;
+
+					@Autowired
+					public void setBarService(BarService barService) {
+						this.barService = barService;
+					}
+					//...
+				}
+			
+			Note that the @Autowired annotation is optional, you can also use the @Inject annotation from the javax.inject package, that works in a similar way.
+			
+			----------------------------------------------------------------------------------------------------------------------------------------------------
+			
+			
 66. Ders -> 
 https://vimeo.com/739746099
 Şifre: person
+
+			SQL mülakat sorusu.
+			
 
 67. Ders -> 
 https://vimeo.com/744009295
@@ -1252,10 +1551,12 @@ https://vimeo.com/751337462
 Şifre: quantity
 
 69. Ders -> 
-order https://vimeo.com/754890077
+order 
+https://vimeo.com/754890077
 
 70. Ders -> 
-order https://vimeo.com/757847792
+order 
+https://vimeo.com/757847792
 
 
 
