@@ -1538,6 +1538,116 @@ https://vimeo.com/739746099
 Şifre: person
 
 			SQL mülakat sorusu.
+			RandomUserCollector
+			
+			-------------------------------------------------------------------------------------------------------------------------------------
+			
+			@Scheduled(fixedRate=...) is a Spring annotation used to schedule a method to be executed at a fixed rate in milliseconds.
+			The method annotated with @Scheduled(fixedRate=...) will be executed every 'x' milliseconds, where 'x' is the value specified in the fixedRate attribute.
+			
+			-------------------------------------------------------------------------------------------------------------------------------------
+			
+			hibernate-types-52 from vlad mihalcea (dependency)
+			
+			'@TypeDef' is a Hibernate annotation used to define custom types that can be used in the mapping of entities.
+			It can be used to map a Java class to a specific database type.
+			For example, you can use @TypeDef(name = "json", typeClass = JsonStringType.class) to map a Java class to a json type on the database.
+			The name parameter is the name of the type that will be used in the mapping, and the typeClass parameter is the class that will be used to handle the mapping.
+			This annotation can be used on top of class level or a property level in the entity.
+			You can use it for example like this :
+
+			
+			@TypeDef(name = "json", typeClass = JsonStringType.class)
+			@Entity
+			public class MyEntity {
+				...
+				@Type(type = "json")
+				private MyData myData;
+				...
+			}
+			
+			In this example, MyData is a custom class that you want to map to json type on your database.
+			
+			-------------------------------------------------------------------------------------------------------------------------------------
+			Spring Librarylerini kullanmadığımız bir projede Gson kullanılabilir.
+			
+			Gson is a Java library that can be used to convert Java objects to their JSON representation, and vice versa. It is developed by Google and is widely used in the Java ecosystem for working with JSON data.
+
+			Gson provides a simple way to convert Java objects to JSON and vice versa using its toJson() and fromJson() methods. The toJson() method takes a Java object as an argument and converts it to a JSON string, and the fromJson() method takes a JSON string and converts it to a Java object.
+
+			Gson also provides a number of other features such as support for custom serialization and deserialization, exclusion of certain fields, and handling of null values. Gson is also highly configurable, which allows for fine-grained control over the JSON output.
+
+			For example, to convert a Java object to JSON, you can use the following code:
+
+			Gson gson = new Gson();
+			MyObject obj = new MyObject();
+			String json = gson.toJson(obj);
+			
+			And to convert a JSON string to a Java object:
+
+			Gson gson = new Gson();
+			MyObject obj = gson.fromJson(json, MyObject.class);
+			
+			In summary, Gson is a powerful and flexible library for working with JSON data in Java, it's easy to use, and has a lot of features that make it suitable for different use cases.
+			
+			-------------------------------------------------------------------------------------------------------------------------------------
+			
+			here's an example of how you might use Gson to convert a Java object to a JSON string and then convert that JSON string back to a Java object:
+
+			import com.google.gson.Gson;
+
+			public class GsonExample {
+				public static void main(String[] args) {
+					// Create a Java object
+					Person person = new Person();
+					person.setName("John Doe");
+					person.setAge(35);
+					person.setAddress("123 Main St.");
+
+					// Convert the Java object to a JSON string
+					Gson gson = new Gson();
+					String json = gson.toJson(person);
+					System.out.println("JSON String: " + json);
+
+					// Convert the JSON string back to a Java object
+					Person personFromJson = gson.fromJson(json, Person.class);
+					System.out.println("Java Object: " + personFromJson);
+				}
+			}
+
+			class Person {
+				private String name;
+				private int age;
+				private String address;
+
+				// getters and setters
+				public String getName() { return name; }
+				public void setName(String name) { this.name = name; }
+				public int getAge() { return age; }
+				public void setAge(int age) { this.age = age; }
+				public String getAddress() { return address; }
+				public void setAddress(String address) { this.address = address; }
+
+				@Override
+				public String toString() {
+					return "Person [name=" + name + ", age=" + age + ", address=" + address + "]";
+				}
+			}
+			
+			In this example, we create a Person object and set some values for its properties.
+			We then use Gson to convert the Person object to a JSON string and print it out.
+			Next, we use Gson's fromJson() method to convert the JSON string back to a Person object and print it out.
+
+			You can see that Gson automatically handles the conversion between the Java object and the JSON string,
+			and takes care of the details of serializing and deserializing the object's properties.
+
+			You also can customize the serialization and deserialization process by using GsonBuilder class and specify some options like exclude fields,
+			date format or custom serializers or deserializers.
+			
+			-------------------------------------------------------------------------------------------------------------------------------------
+			
+			
+			-------------------------------------------------------------------------------------------------------------------------------------
 			
 
 67. Ders -> 
