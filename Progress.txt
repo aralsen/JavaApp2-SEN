@@ -1654,6 +1654,8 @@ https://vimeo.com/739746099
 https://vimeo.com/744009295
 pair
 
+			InvoiceServiceApp
+			
 IEEE FORMAT -> https://vimeo.com/746678457
 
 68.Ders ->
@@ -1664,9 +1666,69 @@ https://vimeo.com/751337462
 order 
 https://vimeo.com/754890077
 
+			InvoiceServiceApp Testlerine bak!
+
 70. Ders -> 
 order 
 https://vimeo.com/757847792
+			
+			OrderServiceApp
+			InvoiceServiceApp
+			
+71.Ders ->
+factory
+https://vimeo.com/790207197
+			KAFKA
+			Apache Kafka is a distributed streaming platform that allows for the handling of real-time data feeds.
+			It is used for building real-time data pipelines and streaming apps. It is designed to handle high volumes of data and can be scaled horizontally to handle an increasing amount of data.
+			Kafka is written in Scala and Java and is an open-source project. It is often used in big data and IoT (Internet of Things) use cases.
+			
+			To use Apache Kafka with Spring, you will need to add the spring-kafka dependency to your project.
+			This dependency provides the necessary libraries for integrating Kafka with Spring.
+
+			In a Maven project, you can add the dependency by adding the following to your pom.xml file:
+
+				<dependency>
+					<groupId>org.springframework.kafka</groupId>
+					<artifactId>spring-kafka</artifactId>
+					<version>2.7.0.RELEASE</version>
+				</dependency>
+				
+			Kafka serialization mantığıyla calısır.
+			
+			A serializer is a way to convert an object to a byte stream, and a deserializer is the opposite, converting a byte stream back to an object.
+
+			StringSerializer is a specific type of serializer provided by the Kafka client library, it converts a Java String object to a byte array.
+			This byte array can then be sent as a message to a Kafka topic.
+
+			It is important to note that in the Kafka producer, the serializer is used to convert the key and value of a message to bytes before sending them to a topic.
+			The default serializer is org.apache.kafka.common.serialization.ByteArraySerializer, but you can use other serializers, such as StringSerializer, IntegerSerializer, JsonSerializer, etc.
+
+			You can use the StringSerializer as key serializer when sending a message to a topic.
+	
+			props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+			
+			You can also use the StringSerializer as value serializer when sending a message to a topic.
+
+			props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+			
+			It is important to note that the serializer you choose must match the type of the key and value in the message you are sending.
+			-----------------------------------------------------------------------------------------------------------------------------
+			
+			Concurrent collections are data structures that allow multiple threads to access and modify the collection simultaneously.
+			These collections are designed to handle situations where multiple threads may be reading and writing to the same data at the same time, without the need for explicit locks or synchronization.
+			Examples of concurrent collections in Java include the ConcurrentHashMap, ConcurrentLinkedQueue, and CopyOnWriteArrayList classes.
+			
+			-------------------------------------------------------------------------------------------------------------------------------
+
+72.Ders ->  
+			
+			
+			
+			
+			
+			
+			
 
 
 
